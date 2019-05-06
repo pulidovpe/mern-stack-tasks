@@ -13,12 +13,27 @@ class App extends Component {
    }
 
    addTask(ev) {
-      console.log(this.state);
+      fetch('/api/tasks', {
+         method: 'POST',
+         body: JSON.stringify(this.state),
+         headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+         }
+      })
+      .then(res => res.json())
+      .then(data => {
+         console.log(data);
+         M.toast({html: 'Task Saved'});
+         this.setState({title: '', description: ''});
+
+      })
+      .catch(err => console.log(err));
       ev.preventDefault();
    }
 
    handleChange(ev) {
-      console.log(ev.target.name);
+      console.log(ev.target.name); 
       const { name, value } = ev.target;
       this.setState({
          [name]: value
@@ -43,12 +58,12 @@ class App extends Component {
                            <form onSubmit={this.addTask}>
                               <div className="row">
                                  <div className="input-field col s12">
-                                    <input type="text" name="title" onChange={this.handleChange} placeholder="Task Title" />
+                                    <input type="text" name="title" onChange={this.handleChange} placeholder="Task Title" value={this.state.title} />
                                  </div>
                               </div>
                               <div className="row">
                                  <div className="input-field col s12">
-                                    <textarea placeholder="Task Description" name="description" onChange={this.handleChange} className="materialize-textarea"></textarea>
+                                    <textarea placeholder="Task Description" name="description" onChange={this.handleChange} className="materialize-textarea" value={this.state.description}></textarea>
                                  </div>
                               </div>
                               <button type="submit" className="btn light-blue darken-4">Enviar</button>
