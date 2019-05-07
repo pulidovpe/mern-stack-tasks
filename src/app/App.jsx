@@ -6,10 +6,15 @@ class App extends Component {
       super();
       this.state = {
          title : '',
-         description : ''
+         description : '',
+         tasks : []
       };
       this.addTask = this.addTask.bind(this);
       this.handleChange = this.handleChange.bind(this);
+   }
+
+   componentDidMount() {
+      this.fetchTask();
    }
 
    addTask(ev) {
@@ -26,10 +31,36 @@ class App extends Component {
          console.log(data);
          M.toast({html: 'Task Saved'});
          this.setState({title: '', description: ''});
-
+         this.fetchTask();
       })
       .catch(err => console.log(err));
       ev.preventDefault();
+   }
+
+   fetchTask() {
+      fetch('/api/tasks')
+         .then(res => res.json())
+         .then(data => {
+            this.setState({tasks: data})
+         });
+   }
+
+   deleteTask(id) {
+      if(confirm('Are you sure to delete?')) {
+         fetch(`/api/tasks/${id}`, {
+            method: 'DELETE',
+            headers: {
+               'Accept': 'application/json',
+               'Content-Type': 'application/json'
+            }
+         })
+            .then(res => res.json())
+            .then(data => {
+               console.log(data);
+               M.toast({ html: 'Task Deleted' });
+               this.fetchTask();
+            });
+      }
    }
 
    handleChange(ev) {
@@ -71,7 +102,38 @@ class App extends Component {
                         </div>
                      </div>
                   </div>
-                  <div className="col s7"></div>
+                  <div className="col s7">
+                     <table>
+                        <thead>
+                           <tr>
+                              <th>Title</th>
+                              <th>Description</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           {
+                              this.state.tasks.map(task => {
+                                 return (
+                                    <tr key={task._id}>
+                                       <td>{task.title}</td>
+                                       <td>{task.description}</td>
+                                       <td>
+                                          <button className="btn light-blue darken-4" onClick={() => this.deleteTask(task._id)}>
+                                             <i className="material-icons">delete</i>
+                                          </button>
+                                       </td>
+                                       <td>
+                                          <button className="btn light-blue darken-4" style={{margin: '4px'}}>
+                                             <i className="material-icons">edit</i>
+                                          </button>
+                                       </td>
+                                    </tr>
+                                 )
+                              })
+                           }
+                        </tbody>
+                     </table>
+                  </div>
                </div>
             </div>
          </div>
