@@ -3,7 +3,7 @@
 > Se usó el stack MERN (MongoDB, Express, React y Node).
 
 ## Screenshots / Capturas de Pantalla
-
+![enter image description here](https://lh3.googleusercontent.com/F-23aIo6h8Eu7thNRJJIYmqcUruHsBX1tfq35oXMuEdqhUabLBip-IqL4Fptjl7vDx6Q-4xceahP=s600 "MERN Task")
 
 ## Tech-framework used / Tecnologías Usadas
 - Node
