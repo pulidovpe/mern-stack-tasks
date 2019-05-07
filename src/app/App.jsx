@@ -7,7 +7,8 @@ class App extends Component {
       this.state = {
          title : '',
          description : '',
-         tasks : []
+         tasks : [],
+         _id : ''
       };
       this.addTask = this.addTask.bind(this);
       this.handleChange = this.handleChange.bind(this);
@@ -18,22 +19,41 @@ class App extends Component {
    }
 
    addTask(ev) {
-      fetch('/api/tasks', {
-         method: 'POST',
-         body: JSON.stringify(this.state),
-         headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-         }
-      })
-      .then(res => res.json())
-      .then(data => {
-         console.log(data);
-         M.toast({html: 'Task Saved'});
-         this.setState({title: '', description: ''});
-         this.fetchTask();
-      })
-      .catch(err => console.log(err));
+      if(this.state._id) {
+         fetch(`/api/tasks/${this.state._id}`, {
+            method: 'PUT',
+            body: JSON.stringify(this.state),
+            headers: {
+               'Accept': 'application/json',
+               'Content-Type': 'application/json'
+            }
+         })
+            .then(res => res.json())
+            .then(data => {
+               console.log(data);
+               M.toast({ html: 'Task Updated' });
+               this.setState({ title: '', description: '' });
+               this.fetchTask();
+            })
+            .catch(err => console.log(err));
+      } else {
+         fetch('/api/tasks', {
+            method: 'POST',
+            body: JSON.stringify(this.state),
+            headers: {
+               'Accept': 'application/json',
+               'Content-Type': 'application/json'
+            }
+         })
+            .then(res => res.json())
+            .then(data => {
+               console.log(data);
+               M.toast({ html: 'Task Saved' });
+               this.setState({ title: '', description: '' });
+               this.fetchTask();
+            })
+            .catch(err => console.log(err));
+      }
       ev.preventDefault();
    }
 
@@ -61,6 +81,19 @@ class App extends Component {
                this.fetchTask();
             });
       }
+   }
+
+   editTask(id) {
+      fetch(`/api/tasks/${id}`)
+         .then(res => res.json())
+         .then(data => {
+            console.log(data);
+            this.setState({
+               title: data.title,
+               description: data.description,
+               _id: data._id
+            })
+         });
    }
 
    handleChange(ev) {
@@ -123,7 +156,7 @@ class App extends Component {
                                           </button>
                                        </td>
                                        <td>
-                                          <button className="btn light-blue darken-4" style={{margin: '4px'}}>
+                                          <button className="btn light-blue darken-4" onClick={() => this.editTask(task._id)} style={{margin: '4px'}}>
                                              <i className="material-icons">edit</i>
                                           </button>
                                        </td>
