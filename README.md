@@ -29,8 +29,8 @@ npm run dev
 ## Tasks / Lista de Tareas
 - [x] Inicializar repositorio
 - [x] Subir mis primeros cambios a GitHub
-- [ ] Completar el back-end
-- [ ] Completar el front-end
+- [x] Completar el back-end
+- [x] Completar el front-end
 
 ## Contribute / Para contribuir
 1. Has un [Fork](https://github.com/pulidovpe/mern-stack-tasks/fork)
